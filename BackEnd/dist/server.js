@@ -8,7 +8,10 @@ const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = require("dotenv");
 const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 const errorMiddleware_1 = require("./middlewares/errorMiddleware");
+const config_1 = __importDefault(require("./utils/config"));
+const chatRoutes_1 = __importDefault(require("./routes/chatRoutes"));
 (0, dotenv_1.config)();
+(0, config_1.default)();
 const app = (0, express_1.default)();
 // Middleware for handling CORS
 app.use((0, cors_1.default)());
@@ -16,17 +19,7 @@ app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 // User Routes
 app.use('/user', userRoutes_1.default);
-// Example Route
-app.get('/', (req, res, next) => {
-    console.log('Inside GET method');
-    try {
-        // Simulate an error
-        throw new Error("Something went wrong in the logic");
-    }
-    catch (error) {
-        next(error); // Passes the error to the error handling middleware
-    }
-});
+app.use('/chat', chatRoutes_1.default);
 // Middleware to handle routes that do not exist
 app.use(errorMiddleware_1.notFoundHandler);
 // Error handling middleware

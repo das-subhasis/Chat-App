@@ -4,8 +4,10 @@ import CORS from "cors";
 import { config } from "dotenv";
 import userRoutes from "./routes/userRoutes";
 import { errorHandler, notFoundHandler } from "./middlewares/errorMiddleware";
-
+import connectDB from "./utils/config";
+import chatRoutes from "./routes/chatRoutes";
 config();
+connectDB();
 
 const app = express();
 
@@ -17,6 +19,7 @@ app.use(express.json());
 
 // User Routes
 app.use('/user', userRoutes);
+app.use('/chat', chatRoutes);
 
 // Middleware to handle routes that do not exist
 app.use(notFoundHandler);
