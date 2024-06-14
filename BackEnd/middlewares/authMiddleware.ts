@@ -18,8 +18,7 @@ const authenticate = expressAsyncHandler(async (req: Request, res: Response, nex
 
             const decoded: JwtPayload = authToken(token);
 
-            req.user = await User.findById(decoded.id).select("-password");
-
+            req.user = await User.findById(decoded._id).select("-password");
             if (!req.user) {
                 res.status(401);
                 throw new Error("Unauthorized access. User not found.");

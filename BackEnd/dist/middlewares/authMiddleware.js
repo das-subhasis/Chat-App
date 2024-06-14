@@ -25,7 +25,7 @@ const authenticate = (0, express_async_handler_1.default)((req, res, next) => __
                 throw new Error("Unauthorized access. Invalid token.");
             }
             const decoded = (0, authUtils_1.authToken)(token);
-            req.user = yield User_1.default.findById(decoded.id).select("-password");
+            req.user = yield User_1.default.findById(decoded._id).select("-password");
             if (!req.user) {
                 res.status(401);
                 throw new Error("Unauthorized access. User not found.");

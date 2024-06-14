@@ -6,6 +6,7 @@ import userRoutes from "./routes/userRoutes";
 import { errorHandler, notFoundHandler } from "./middlewares/errorMiddleware";
 import connectDB from "./utils/config";
 import chatRoutes from "./routes/chatRoutes";
+import messageRoutes from "./routes/messageRoutes";
 config();
 connectDB();
 
@@ -20,6 +21,7 @@ app.use(express.json());
 // User Routes
 app.use('/user', userRoutes);
 app.use('/chat', chatRoutes);
+app.use('/message', messageRoutes);
 
 // Middleware to handle routes that do not exist
 app.use(notFoundHandler);

@@ -4,9 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const chatController_1 = require("../controllers/chatController");
+const messageController_1 = require("../controllers/messageController");
 const authMiddleware_1 = __importDefault(require("../middlewares/authMiddleware"));
-const chatRoutes = (0, express_1.Router)();
-chatRoutes.get('/', authMiddleware_1.default, chatController_1.fetchChats);
-chatRoutes.post('/create', authMiddleware_1.default, chatController_1.createChat);
-exports.default = chatRoutes;
+const messageRoutes = (0, express_1.Router)();
+messageRoutes.get('/:chatId', authMiddleware_1.default, messageController_1.fetchMessages);
+messageRoutes.post('/send', authMiddleware_1.default, messageController_1.sendMessage);
+exports.default = messageRoutes;

@@ -1,6 +1,7 @@
 import expressAsyncHandler from "express-async-handler"
 import User from "../models/User";
 import { generateToken } from "../utils/authUtils";
+import bcrypt from "bcrypt"
 
 const authUser = expressAsyncHandler(async (req, res) => {
     const { username, password } = req.body;
@@ -8,10 +9,12 @@ const authUser = expressAsyncHandler(async (req, res) => {
     try {
         const foundUser = await User.findOne({ username });
 
-        if (!foundUser) {
+        if (!foundUser || !(await bcrypt.compare(password, foundUser.password))) {
             res.status(404);
             throw new Error("Invalid username or password");
         }
+
+        console.log()
 
         res.status(200).json({
             user: {
@@ -19,7 +22,7 @@ const authUser = expressAsyncHandler(async (req, res) => {
                 username: foundUser.username,
                 email: foundUser.email,
                 pic: foundUser.pic,
-                token: await generateToken(foundUser._id)
+                token: generateToken(foundUser._id)
             }
         })
     } catch (error: any) {

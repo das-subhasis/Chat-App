@@ -16,21 +16,23 @@ exports.registerUser = exports.authUser = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const User_1 = __importDefault(require("../models/User"));
 const authUtils_1 = require("../utils/authUtils");
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const authUser = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, password } = req.body;
     try {
         const foundUser = yield User_1.default.findOne({ username });
-        if (!foundUser) {
+        if (!foundUser || !(yield bcrypt_1.default.compare(password, foundUser.password))) {
             res.status(404);
             throw new Error("Invalid username or password");
         }
+        console.log();
         res.status(200).json({
             user: {
                 _id: foundUser._id,
                 username: foundUser.username,
                 email: foundUser.email,
                 pic: foundUser.pic,
-                token: yield (0, authUtils_1.generateToken)(foundUser._id)
+                token: (0, authUtils_1.generateToken)(foundUser._id)
             }
         });
     }
