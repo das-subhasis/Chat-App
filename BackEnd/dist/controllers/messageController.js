@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendMessage = exports.fetchMessages = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const Message_1 = __importDefault(require("../models/Message"));
+const Chat_1 = __importDefault(require("../models/Chat"));
 exports.fetchMessages = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const messages = yield Message_1.default.find({ chat: req.params.chatId }).populate("sender", "username email pic").populate("chat");
@@ -36,10 +37,12 @@ exports.sendMessage = (0, express_async_handler_1.default)((req, res) => __await
             chat
         });
         newMessage = yield newMessage.populate("sender", "username email pic");
-        newMessage = yield newMessage.populate("chat");
+        newMessage = yield newMessage.populate('chat');
+        newMessage = yield newMessage.populate("chat.users", "username email pic");
         res.status(200).json({
             message: newMessage
         });
+        yield Chat_1.default.findByIdAndUpdate(chat, { latestMessage: newMessage });
     }
     catch (error) {
         res.status(401);

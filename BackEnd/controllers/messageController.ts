@@ -1,6 +1,8 @@
 import expressAsyncHandler from "express-async-handler";
 import Message from "../models/Message";
 import { Request, Response } from "express";
+import User from "../models/User";
+import Chat from "../models/Chat";
 
 export const fetchMessages = expressAsyncHandler(async (req: Request, res: Response) => {
     try {
@@ -25,11 +27,14 @@ export const sendMessage = expressAsyncHandler(async (req: Request, res: Respons
         });
 
         newMessage = await newMessage.populate("sender", "username email pic");
-        newMessage = await newMessage.populate("chat");
+        newMessage = await newMessage.populate('chat');
+        newMessage = await newMessage.populate("chat.users", "username email pic");
 
         res.status(200).json({
             message: newMessage
         });
+
+        await Chat.findByIdAndUpdate(chat, { latestMessage: newMessage });
 
     } catch (error: any) {
         res.status(401);

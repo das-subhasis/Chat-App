@@ -12,12 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerUser = exports.authUser = void 0;
+exports.removeUser = exports.registerUser = exports.authUser = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const User_1 = __importDefault(require("../models/User"));
 const authUtils_1 = require("../utils/authUtils");
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const authUser = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authUser = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, password } = req.body;
     try {
         const foundUser = yield User_1.default.findOne({ username });
@@ -25,7 +25,6 @@ const authUser = (0, express_async_handler_1.default)((req, res) => __awaiter(vo
             res.status(404);
             throw new Error("Invalid username or password");
         }
-        console.log();
         res.status(200).json({
             user: {
                 _id: foundUser._id,
@@ -41,8 +40,7 @@ const authUser = (0, express_async_handler_1.default)((req, res) => __awaiter(vo
         throw new Error(error);
     }
 }));
-exports.authUser = authUser;
-const registerUser = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.registerUser = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, email, password, pic } = req.body;
     try {
         const existingUser = yield User_1.default.findOne({
@@ -51,7 +49,6 @@ const registerUser = (0, express_async_handler_1.default)((req, res) => __awaite
                 { email: email }
             ]
         });
-        // throw error if a user exists
         if (existingUser) {
             res.status(409);
             throw new Error("User already exists.");
@@ -77,4 +74,14 @@ const registerUser = (0, express_async_handler_1.default)((req, res) => __awaite
         throw new Error(error);
     }
 }));
-exports.registerUser = registerUser;
+exports.removeUser = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.params.userId;
+    try {
+        const user = yield User_1.default.findByIdAndDelete(id);
+        res.status(200).send(`User - ${id} has been removed successfully.`);
+    }
+    catch (error) {
+        res.status(400);
+        throw new Error("Failed to remove user");
+    }
+}));

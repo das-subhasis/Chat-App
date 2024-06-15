@@ -2,8 +2,9 @@ import expressAsyncHandler from "express-async-handler"
 import User from "../models/User";
 import { generateToken } from "../utils/authUtils";
 import bcrypt from "bcrypt"
+import { Request, Response } from "express";
 
-const authUser = expressAsyncHandler(async (req, res) => {
+export const authUser = expressAsyncHandler(async (req, res) => {
     const { username, password } = req.body;
 
     try {
@@ -13,8 +14,6 @@ const authUser = expressAsyncHandler(async (req, res) => {
             res.status(404);
             throw new Error("Invalid username or password");
         }
-
-        console.log()
 
         res.status(200).json({
             user: {
@@ -31,7 +30,7 @@ const authUser = expressAsyncHandler(async (req, res) => {
     }
 })
 
-const registerUser = expressAsyncHandler(async (req, res) => {
+export const registerUser = expressAsyncHandler(async (req, res) => {
     const { username, email, password, pic } = req.body;
 
     try {
@@ -42,7 +41,6 @@ const registerUser = expressAsyncHandler(async (req, res) => {
             ]
         });
 
-        // throw error if a user exists
         if (existingUser) {
             res.status(409);
             throw new Error("User already exists.");
@@ -71,4 +69,13 @@ const registerUser = expressAsyncHandler(async (req, res) => {
     }
 })
 
-export { authUser, registerUser }
+export const removeUser = expressAsyncHandler(async (req: Request, res:Response) => {
+    const id = req.params.userId;
+    try {
+        const user = await User.findByIdAndDelete(id);
+        res.status(200).send(`User - ${id} has been removed successfully.`)
+    } catch(error){
+        res.status(400);
+        throw new Error("Failed to remove user");
+    }
+})
