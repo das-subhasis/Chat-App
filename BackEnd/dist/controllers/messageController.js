@@ -19,9 +19,7 @@ const Chat_1 = __importDefault(require("../models/Chat"));
 exports.fetchMessages = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const messages = yield Message_1.default.find({ chat: req.params.chatId }).populate("sender", "username email pic").populate("chat");
-        res.status(200).json({
-            messages: messages
-        });
+        res.status(200).json(messages);
     }
     catch (error) {
         res.status(500);
@@ -39,9 +37,7 @@ exports.sendMessage = (0, express_async_handler_1.default)((req, res) => __await
         newMessage = yield newMessage.populate("sender", "username email pic");
         newMessage = yield newMessage.populate('chat');
         newMessage = yield newMessage.populate("chat.users", "username email pic");
-        res.status(200).json({
-            message: newMessage
-        });
+        res.status(200).json(newMessage);
         yield Chat_1.default.findByIdAndUpdate(chat, { latestMessage: newMessage });
     }
     catch (error) {

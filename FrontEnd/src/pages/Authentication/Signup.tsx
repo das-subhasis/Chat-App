@@ -15,7 +15,7 @@ const Signup = () => {
     const handleSignup = (e: FormEvent) => {
         e.preventDefault();
         const { username, email, password, pic } = user;
-        signup(username, password, email, pic);
+        signup(username, email, password, pic);
         setUser({ username: '', email:'', password: '', pic: '' });
     }
 
@@ -24,7 +24,6 @@ const Signup = () => {
         setUser({ ...user, [name]: value });
     }
 
-    console.log(user.pic);
     return (
         <div className='flex-1 flex justify-center items-center'>
             <div className='container mx-auto w-[500px] h-[500px] ring-2 ring-black rounded-xl flex flex-col px-10 py-5'>

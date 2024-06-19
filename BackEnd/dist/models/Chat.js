@@ -13,6 +13,8 @@ const ChatSchema = new mongoose_1.default.Schema({
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: 'Message'
     }
+}, {
+    timestamps: true
 });
 const Chat = mongoose_1.default.model("Chat", ChatSchema);
 exports.default = Chat;

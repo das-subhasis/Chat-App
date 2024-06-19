@@ -10,9 +10,7 @@ export const fetchChats = expressAsyncHandler(async (req: Request, res: Response
             }
         }).populate("users", "-password").populate("latestMessage");
 
-        res.json({
-            chats: allChats
-        })
+        res.json(allChats);
     } catch (error: any) {
         res.status(401);
         throw new Error(error);

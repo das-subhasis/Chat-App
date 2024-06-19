@@ -22,9 +22,7 @@ exports.fetchChats = (0, express_async_handler_1.default)((req, res) => __awaite
                 $elemMatch: { $eq: req.user._id }
             }
         }).populate("users", "-password").populate("latestMessage");
-        res.json({
-            chats: allChats
-        });
+        res.json(allChats);
     }
     catch (error) {
         res.status(401);

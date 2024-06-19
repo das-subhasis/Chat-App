@@ -7,6 +7,8 @@ import { errorHandler, notFoundHandler } from "./middlewares/errorMiddleware";
 import connectDB from "./utils/config";
 import chatRoutes from "./routes/chatRoutes";
 import messageRoutes from "./routes/messageRoutes";
+import {Server, Socket} from "socket.io";
+
 config();
 connectDB();
 
@@ -31,6 +33,30 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000; // Default port
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server is listening at port: ${PORT}`);
 });
+
+const io = new Server(server, {
+    pingTimeout: 50000,
+    cors:{
+        origin:'http://localhost:5173'
+    }
+})
+
+io.on("connection", (socket : Socket) => {
+    console.log("Connected to socket.io");
+    socket.on('join_chat', (chatId) => {
+        socket.join(chatId);
+    });
+
+    socket.on('send_message', (message) => {
+        io.to(message.chatId).emit('receive_message', message);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
+})
+
+

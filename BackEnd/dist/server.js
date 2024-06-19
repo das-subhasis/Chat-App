@@ -11,6 +11,7 @@ const errorMiddleware_1 = require("./middlewares/errorMiddleware");
 const config_1 = __importDefault(require("./utils/config"));
 const chatRoutes_1 = __importDefault(require("./routes/chatRoutes"));
 const messageRoutes_1 = __importDefault(require("./routes/messageRoutes"));
+const socket_io_1 = require("socket.io");
 (0, dotenv_1.config)();
 (0, config_1.default)();
 const app = (0, express_1.default)();
@@ -27,6 +28,24 @@ app.use(errorMiddleware_1.notFoundHandler);
 // Error handling middleware
 app.use(errorMiddleware_1.errorHandler);
 const PORT = process.env.PORT || 5000; // Default port
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server is listening at port: ${PORT}`);
+});
+const io = new socket_io_1.Server(server, {
+    pingTimeout: 50000,
+    cors: {
+        origin: 'http://localhost:5173'
+    }
+});
+io.on("connection", (socket) => {
+    console.log("Connected to socket.io");
+    socket.on('join_chat', (chatId) => {
+        socket.join(chatId);
+    });
+    socket.on('send_message', (message) => {
+        io.to(message.chatId).emit('receive_message', message);
+    });
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
 });

@@ -31,6 +31,13 @@ const Header = () => {
                 </div>
                 <div className='flex items-center gap-8'>
                     <div>
+                        <button
+                            className='bg-white text-black px-3 py-1 rounded-md'
+                        >
+                            <Link to={'/'}>Chat</Link>
+                        </button>
+                    </div>
+                    <div>
                         <FaBell size={20} color='#FFF' />
                     </div>
                     <div className='flex items-center gap-2'>
@@ -69,7 +76,8 @@ const Header = () => {
                             className='mt-4'
                         >
                             {
-                                 user ? (
+
+                                user._id ? (
                                     [
                                         <MenuItem key="profile" onClick={handleClose}>Profile</MenuItem>,
                                         <MenuItem key="logout" onClick={handleLogout}>Logout</MenuItem>

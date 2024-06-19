@@ -7,9 +7,7 @@ import Chat from "../models/Chat";
 export const fetchMessages = expressAsyncHandler(async (req: Request, res: Response) => {
     try {
         const messages = await Message.find({ chat: req.params.chatId }).populate("sender", "username email pic").populate("chat");
-        res.status(200).json({
-            messages: messages
-        });
+        res.status(200).json(messages);
     } catch (error) {
         res.status(500);
         throw new Error("Failed to fetch messages.")
@@ -30,9 +28,7 @@ export const sendMessage = expressAsyncHandler(async (req: Request, res: Respons
         newMessage = await newMessage.populate('chat');
         newMessage = await newMessage.populate("chat.users", "username email pic");
 
-        res.status(200).json({
-            message: newMessage
-        });
+        res.status(200).json(newMessage);
 
         await Chat.findByIdAndUpdate(chat, { latestMessage: newMessage });
 
